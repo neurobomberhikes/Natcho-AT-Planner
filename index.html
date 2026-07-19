@@ -140,7 +140,7 @@ svg text{font-family:var(--mono)}
     <p class="hint">Note: NOBO thru-hikers need a Smokies permit and must use shelters there; Baxter State Park (Katahdin) has strict camping rules and seasonal closures. The Kennebec River is crossed by canoe ferry — do not ford. Miles run 0 at Springer to ~2,109 at Katahdin; shelter positions are GPS-matched to the trail; town mileages are approximate (official length shifts yearly with reroutes) — verify in your nav app.</p>
     <div class="card">
       <div class="setrow"><label>Direction</label>
-        <div class="seg2"><button id="dirNOBO" data-dir="NOBO">Happy Isles → Whitney</button><button id="dirSOBO" data-dir="SOBO">Whitney → Happy Isles</button></div>
+        <div class="seg2"><button id="dirNOBO" data-dir="NOBO">NOBO</button><button id="dirSOBO" data-dir="SOBO">SOBO</button></div>
       </div>
       <div class="setrow"><label>Start</label><select id="startSel"></select></div>
       <div class="setrow"><label>End</label><select id="endSel"></select></div>
@@ -152,7 +152,7 @@ svg text{font-family:var(--mono)}
       <div class="setrow"><label>Side quests</label>
         <div class="seg2"><button id="qOn">On</button><button id="qOff">Off</button></div>
       </div>
-      <div class="sub" style="margin:-4px 0 8px 102px">Bonus-mile detours (Mt. Whitney, custom peaks/hot springs) — extra days and gain are injected where each quest anchors.</div>
+      <div class="sub" style="margin:-4px 0 8px 102px">Bonus-mile detours (side peaks, hot springs, resupply spurs) — extra days and gain are injected where each quest anchors.</div>
       <div class="setrow"><label>Log entry</label>
         <div class="seg2"><button id="logMi">Miles / day</button><button id="logPct">AT mile</button></div>
       </div>
@@ -193,7 +193,7 @@ svg text{font-family:var(--mono)}
       <div class="sub" id="setupSummary" style="margin-top:4px"></div>
     </div>
     <div id="rcEditor" style="display:none">
-      <div class="sub" style="margin:2px 4px 8px"><b>Route changes</b> — trailhead to trailhead, applied in trip order; direction persists until the next change. Travel day inserts a zero-mile day at the jump. Presets below build a typical pattern you can then adjust. The Cottonwood presets include the Whitney summit (delete the first change to skip it).</div>
+      <div class="sub" style="margin:2px 4px 8px"><b>Route changes</b> — trailhead to trailhead, applied in trip order; direction persists until the next change. Travel day inserts a zero-mile day at the jump. Presets below build a typical pattern you can then adjust.</div>
       <div style="display:flex;gap:8px;margin-bottom:10px">
         <button class="reset" id="pJump" style="margin:0;flex:1;padding:9px 4px">Jump / skip</button>
         <button class="reset" id="pFlip" style="margin:0;flex:1;padding:9px 4px">Flip-flop</button>
@@ -980,6 +980,16 @@ function renderSetup(m){
   const st=state.settings;
   const T=(id,on)=>{const e=document.getElementById(id);if(e)e.classList.toggle("on",on);};
   T("dirNOBO",st.dir==="NOBO");T("dirSOBO",st.dir==="SOBO");
+  (function(){
+    // label direction buttons with the trail's own terminals (generic across trails)
+    const terms=WPTS.filter(w=>w[2].includes("TR"));
+    const first=terms.length?terms[0][1]:"", last=terms.length?terms[terms.length-1][1]:"";
+    const shortName=s=>s.replace(/\s*[—(].*$/,"").replace(/,.*$/,"").trim();
+    const a=shortName(first), b=shortName(last);
+    const nb=document.getElementById("dirNOBO"), sb=document.getElementById("dirSOBO");
+    if(nb&&a&&b) nb.textContent="NOBO · "+a+" → "+b;
+    if(sb&&a&&b) sb.textContent="SOBO · "+b+" → "+a;
+  })();
   T("gpsOn",st.gps==="on");T("gpsOff",st.gps!=="on");
   T("gpsMan",st.gpsMode!=="auto");T("gpsAuto",st.gpsMode==="auto");
   T("logMi",st.logMode!=="pct");T("logPct",st.logMode==="pct");
